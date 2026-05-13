@@ -8,6 +8,7 @@
 #include <wrl/client.h>
 
 #include <bitset>
+#include <cmath>
 
 inline constexpr int WIDTH = 800;
 inline constexpr int HEIGHT = 600;
