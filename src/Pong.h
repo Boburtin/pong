@@ -35,8 +35,8 @@ struct Ball {
 };
 
 struct Paddle {
-    float x, y;
-    float vy;
+    float x {0.f}, y {240.f};
+    float vy {0.f};
     D2D1_RECT_F rect() const { return {x, y, x + PADDLE_W, y + PADDLE_H}; }
 };
 

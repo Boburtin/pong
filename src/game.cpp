@@ -3,26 +3,25 @@
 #include "Pong.h"
 
 void update(Ball &ball, Paddle &paddle, float dt, std::bitset<256> &keys) {
-    // vx * delta-time caps pixels travelled / second, regardless of CPU clock speed 
+    
     ball.x += ball.vx * dt;
     ball.y += ball.vy * dt;
     paddle.y += paddle.vy * dt;
-    /* note: normal calculation for circle / rectangle collision involves
-             taking cx - rx. Left and right is just for future-proofing potential paddle changes*/
+    
     float dx = ball.x - std::clamp(ball.x, paddle.rect().left, paddle.rect().right);
     float dy = ball.y - std::clamp(ball.y, paddle.rect().top, paddle.rect().bottom);
-    // this plus the ball.radius2 constant avoids expensive sqrt calculation here, though it's still used further down
+    
     float dx2 = dx * dx, dy2 = dy * dy;
-
+    
     if (dx2 + dy2 <= ball.radius2) {
         if (dx2 > dy2) ball.vx = -ball.vx;
         else if (dy2 > dx2) ball.vy = -ball.vy;
         else ball.vx = -ball.vx, ball.vy = -ball.vy;
-        // the one necessary square root calc
+        
         float dist = std::sqrt(dx2 + dy2);
         
         if (dist > 0) {
-        // (nx, ny) for normal x, normal y
+            
             float nx = dx / dist, ny = dy / dist;
 
             ball.x = std::clamp(ball.x, paddle.rect().left, paddle.rect().right) + nx * ball.radius;
@@ -30,18 +29,18 @@ void update(Ball &ball, Paddle &paddle, float dt, std::bitset<256> &keys) {
         }
         else {
             float to_left = ball.x - paddle.rect().left;
-            float to_right = ball.y - paddle.rect().right;
+            float to_right = ball.x - paddle.rect().right;
             if (to_left < to_right) ball.x = paddle.rect().left - ball.radius;
             else ball.x = paddle.rect().right + ball.radius;
         }
     }
-    float wall_dx = ball.x - std::clamp(ball.x, ball.radius, WIDTH - ball.radius);
-    float wall_dy = ball.y - std::clamp(ball.y, ball.radius, HEIGHT - ball.radius);
-    float wall_dx2 = wall_dx * wall_dx, wall_dy2 = wall_dy * wall_dy;
+    float overlap_dx = ball.x - std::clamp(ball.x, ball.radius, WIDTH - ball.radius);
+    float overlap_dy = ball.y - std::clamp(ball.y, ball.radius, HEIGHT - ball.radius);
+    float overlap_dx2 = overlap_dx * overlap_dx, overlap_dy2 = overlap_dy * overlap_dy;
 
-    if (wall_dx2 + wall_dy2 > 0) {
-        if (wall_dx2 > wall_dy2) ball.vx = -ball.vx;
-        else if (wall_dy2 > wall_dx2) ball.vy = -ball.vy;
+    if (overlap_dx2 + overlap_dy2 > 0) {
+        if (overlap_dx2 > overlap_dy2) ball.vx = -ball.vx;
+        else if (overlap_dy2 > overlap_dx2) ball.vy = -ball.vy;
         else ball.vx = -ball.vx, ball.vy = -ball.vy;
 
         ball.x = std::clamp(ball.x, ball.radius, WIDTH - ball.radius);

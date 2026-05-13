@@ -24,8 +24,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
     std::uniform_int_distribution<int> coin(0, 1);
     float rad = angle_dis(gen) * (std::numbers::pi_v<float> / 180.f);
 
-    Ball ball {(float)SPEED * std::cos(rad) * (coin(gen) ? 1.f : -1.f),
-               (float)SPEED * std::sin(rad) * (coin(gen) ? 1.f : -1.f)};
+    Ball ball {static_cast<float>(SPEED) * std::cos(rad) * (coin(gen) ? 1.f : -1.f),
+               static_cast<float>(SPEED) * std::sin(rad) * (coin(gen) ? 1.f : -1.f)};
     Paddle paddle {};
     std::bitset<256> *keyset = new std::bitset<256>();
 
