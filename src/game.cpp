@@ -3,22 +3,28 @@
 #include "Pong.h"
 
 void update(Ball &ball, Paddle &paddle, float dt, std::bitset<256> &keys) {
+    // vx * delta-time caps pixels travelled / second, regardless of CPU clock speed 
     ball.x += ball.vx * dt;
     ball.y += ball.vy * dt;
     paddle.y += paddle.vy * dt;
+    /* note: normal calculation for circle / rectangle collision involves
+             taking cx - rx. Left and right is just for future-proofing potential paddle changes*/
     float dx = ball.x - std::clamp(ball.x, paddle.rect().left, paddle.rect().right);
     float dy = ball.y - std::clamp(ball.y, paddle.rect().top, paddle.rect().bottom);
+    // this plus the ball.radius2 constant avoids expensive sqrt calculation here, though it's still used further down
     float dx2 = dx * dx, dy2 = dy * dy;
 
     if (dx2 + dy2 <= ball.radius2) {
         if (dx2 > dy2) ball.vx = -ball.vx;
         else if (dy2 > dx2) ball.vy = -ball.vy;
         else ball.vx = -ball.vx, ball.vy = -ball.vy;
-
+        // the one necessary square root calc
         float dist = std::sqrt(dx2 + dy2);
-
-        if (dist != 0) {
+        
+        if (dist > 0) {
+        // (nx, ny) for normal x, normal y
             float nx = dx / dist, ny = dy / dist;
+
             ball.x = std::clamp(ball.x, paddle.rect().left, paddle.rect().right) + nx * ball.radius;
             ball.y = std::clamp(ball.y, paddle.rect().top, paddle.rect().bottom) + ny * ball.radius;
         }
