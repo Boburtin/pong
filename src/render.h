@@ -11,8 +11,7 @@ using HWND = HWND__ *;
 struct Paddle;
 struct Ball;
 
-struct RenderContext
-{
+struct RenderContext {
     Microsoft::WRL::ComPtr<ID2D1Factory> pFactory;
     Microsoft::WRL::ComPtr<ID2D1HwndRenderTarget> pRT;
     Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush;

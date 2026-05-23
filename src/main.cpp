@@ -1,60 +1,57 @@
-#include <windows.h>
-
+#include "game.h"
+#include "render.h"
 #include <bitset>
 #include <numbers>
 #include <random>
+#include <windows.h>
 
-#include "game.h"
-#include "render.h"
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    switch (uMsg)
-    {
-    case WM_CREATE: {
-        CREATESTRUCTW *lpPtr = reinterpret_cast<CREATESTRUCTW *>(lParam);
-        SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(lpPtr->lpCreateParams));
-        return 0;
-    }
-    case WM_KEYDOWN: {
-        std::bitset<256> *keyset = reinterpret_cast<std::bitset<256> *>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-        if (keyset != nullptr && wParam < 256)
-            keyset->set(wParam);
-        return 0;
-    }
-    case WM_KEYUP: {
-        std::bitset<256> *keyset = reinterpret_cast<std::bitset<256> *>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-        if (keyset != nullptr && wParam < 256)
-            keyset->reset(wParam);
-        return 0;
-    }
-    case WM_PAINT: {
-        PAINTSTRUCT ps;
-        BeginPaint(hwnd, &ps);
-        EndPaint(hwnd, &ps);
-        return 0;
-    }
-    case WM_DESTROY: {
-        delete reinterpret_cast<std::bitset<256> *>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-        PostQuitMessage(0);
-        return 0;
-    }
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    switch (uMsg) {
+        case WM_CREATE: {
+            CREATESTRUCTW *lpPtr = reinterpret_cast<CREATESTRUCTW *>(lParam);
+            SetWindowLongPtrW(hwnd, GWLP_USERDATA,
+                              reinterpret_cast<LONG_PTR>(lpPtr->lpCreateParams));
+            return 0;
+        }
+        case WM_KEYDOWN: {
+            std::bitset<256> *keyset = reinterpret_cast<std::bitset<256> *>(
+                GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+            if (keyset != nullptr && wParam < 256) keyset->set(wParam);
+            return 0;
+        }
+        case WM_KEYUP: {
+            std::bitset<256> *keyset = reinterpret_cast<std::bitset<256> *>(
+                GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+            if (keyset != nullptr && wParam < 256) keyset->reset(wParam);
+            return 0;
+        }
+        case WM_PAINT: {
+            PAINTSTRUCT ps;
+            BeginPaint(hwnd, &ps);
+            EndPaint(hwnd, &ps);
+            return 0;
+        }
+        case WM_DESTROY: {
+            delete reinterpret_cast<std::bitset<256> *>(
+                GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+            PostQuitMessage(0);
+            return 0;
+        }
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
-{
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> angle_dis(30.f, 60.f);
     std::uniform_int_distribution<int> coin(0, 1);
     float rad = angle_dis(gen) * (std::numbers::pi_v<float> / 180.f);
-    Ball ball{static_cast<float>(SPEED) * std::cos(rad) * (coin(gen) ? 1.f : -1.f),
-              static_cast<float>(SPEED) * std::sin(rad) * (coin(gen) ? 1.f : -1.f)};
-    Paddle paddle{};
+    Ball ball {static_cast<float>(SPEED) * std::cos(rad) * (coin(gen) ? 1.f : -1.f),
+               static_cast<float>(SPEED) * std::sin(rad) * (coin(gen) ? 1.f : -1.f)};
+    Paddle paddle {};
     std::bitset<256> *keyset = new std::bitset<256>();
-    WNDCLASS wc{};
+    WNDCLASS wc {};
     const wchar_t *CLASS_NAME = L"Pong";
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
@@ -64,21 +61,20 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow)
     RECT window = {0, 0, WIDTH, HEIGHT + 40};
     DWORD WindowStyles = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
     AdjustWindowRectEx(&window, WindowStyles, FALSE, 0);
-    HWND hwnd = CreateWindowExW(0, CLASS_NAME, L"GGPong", WindowStyles, CW_USEDEFAULT, CW_USEDEFAULT,
-                                window.right - window.left, window.bottom - window.top, NULL, NULL, hInstance, keyset);
+    HWND hwnd =
+        CreateWindowExW(0, CLASS_NAME, L"GGPong", WindowStyles, CW_USEDEFAULT,
+                        CW_USEDEFAULT, window.right - window.left,
+                        window.bottom - window.top, NULL, NULL, hInstance, keyset);
     ShowWindow(hwnd, nCmdShow);
-    MSG msg{};
-    RenderContext rc{};
+    MSG msg {};
+    RenderContext rc {};
     InitRenderContext(rc, hwnd);
     LARGE_INTEGER freq, prev, now;
     QueryPerformanceFrequency(&freq);
     QueryPerformanceCounter(&prev);
-    do
-    {
-        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
-                return 0;
+    do {
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
+            if (msg.message == WM_QUIT) return 0;
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
