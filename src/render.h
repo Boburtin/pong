@@ -1,10 +1,15 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "game.h"
 #include <d2d1.h>
 #include <dwrite.h>
 #include <wrl/client.h>
+
+struct HWND__;
+using HWND = HWND__ *;
+
+struct Paddle;
+struct Ball;
 
 struct RenderContext
 {
@@ -16,6 +21,7 @@ struct RenderContext
     bool fullRedraw = false;
 };
 
+void InitRenderContext(RenderContext &rc, HWND hwnd);
 void render(const Ball &ball, const Paddle &paddle, RenderContext &rc);
 
 #endif

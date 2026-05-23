@@ -1,14 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Constant.h"
 #include <bitset>
 #include <d2d1.h>
-
-inline constexpr int WIDTH = 800;
-inline constexpr int HEIGHT = 600;
-inline constexpr float PADDLE_W = 40.f;
-inline constexpr float PADDLE_H = 120.f;
-inline constexpr double SPEED = 600.f;
 
 struct Ball
 {
@@ -16,12 +11,12 @@ struct Ball
     float vx, vy;
     float radius{20.f};
     float radius2{400.f};
+    Ball(float vx, float vy) : vx(vx), vy(vy) {};
     D2D1_ELLIPSE
     ellipse() const
     {
         return {x, y, radius, radius};
     }
-    Ball(float vx, float vy) : vx(vx), vy(vy) {};
 };
 
 struct Paddle

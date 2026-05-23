@@ -1,7 +1,7 @@
 
 # Pong
 
-C++ pong for practice with linear algebra concepts as they relate to cartesian coordinates, normalizing vectors, etc.
+Direct2D pong for practice with linear algebra/cartesian coordinates.
 
 ## Status
 

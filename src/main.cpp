@@ -1,24 +1,11 @@
-#include "game.h"
-#include "render.h"
+#include <windows.h>
+
 #include <bitset>
 #include <numbers>
 #include <random>
-#include <windows.h>
 
-void InitRenderContext(RenderContext &rc, HWND hwnd)
-{
-    D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, rc.pFactory.GetAddressOf());
-    RECT rect;
-    GetClientRect(hwnd, &rect);
-    D2D1_SIZE_U size = D2D1::SizeU(rect.right, rect.bottom);
-    rc.pFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(), D2D1::HwndRenderTargetProperties(hwnd, size),
-                                        rc.pRT.GetAddressOf());
-    DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
-                        reinterpret_cast<IUnknown **>(rc.pDWFactory.GetAddressOf()));
-    rc.pRT->CreateSolidColorBrush(D2D1::ColorF(.1f, .1f, .1f, .1f), rc.pBrush.GetAddressOf());
-    rc.pDWFactory->CreateTextFormat(L"Consolas", nullptr, DWRITE_FONT_WEIGHT_MEDIUM, DWRITE_FONT_STYLE_NORMAL,
-                                    DWRITE_FONT_STRETCH_NORMAL, 20.f, L"en-us", rc.pHUDFont.GetAddressOf());
-}
+#include "game.h"
+#include "render.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
