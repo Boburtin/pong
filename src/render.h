@@ -17,7 +17,6 @@ struct RenderContext {
     Microsoft::WRL::ComPtr<ID2D1SolidColorBrush> pBrush;
     Microsoft::WRL::ComPtr<IDWriteFactory> pDWFactory;
     Microsoft::WRL::ComPtr<IDWriteTextFormat> pHUDFont;
-    bool fullRedraw = false;
 };
 
 void InitRenderContext(RenderContext &rc, HWND hwnd);
