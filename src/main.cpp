@@ -61,8 +61,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
     RECT window = {0, 0, WIDTH, HEIGHT + 40};
     DWORD WindowStyles = WS_OVERLAPPEDWINDOW & ~(WS_MAXIMIZEBOX | WS_THICKFRAME);
     AdjustWindowRectEx(&window, WindowStyles, FALSE, 0);
-    HWND hwnd =
-        CreateWindowExW(0, CLASS_NAME, L"GGPong", WindowStyles, CW_USEDEFAULT,
+    HWND hwnd = CreateWindowExW(0, CLASS_NAME, L"GGPong", WindowStyles, CW_USEDEFAULT,
                         CW_USEDEFAULT, window.right - window.left,
                         window.bottom - window.top, NULL, NULL, hInstance, keyset);
     ShowWindow(hwnd, nCmdShow);
